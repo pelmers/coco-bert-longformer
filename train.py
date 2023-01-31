@@ -108,6 +108,8 @@ def train(device, model_type, model_save_path, data_classes = ['param', 'return'
         print(f"\t valid_loss: {valid_loss:.3f} valid_precision: {valid_precision:.3f} valid_recall: {valid_recall:.3f} valid_f1: {valid_f1:.3f} valid_acc: {valid_acc:.3f}")
         print("\t {:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(min), sec))
 
+    return classifier
+
 if __name__ == "__main__":
     torch.cuda.empty_cache()
     print(f"Effective batch size: {BATCH_SIZE * ACCUM_ITERS} Learning rate: {LEARNING_RATE}")

@@ -6,7 +6,7 @@ from tqdm import tqdm
 from torch.utils.data import DataLoader
 from metrics import compute_metrics
 from dataset import *
-from model import get_model
+from model import get_bert_model, get_longformer_model
 from constants import *
 
 def test(classifier, test_loader, device):
