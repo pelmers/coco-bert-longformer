@@ -76,13 +76,13 @@ def train(device, model_type, model_save_path, data_classes = ['param', 'return'
         gold_labels = []
 
         with torch.no_grad():
-            for batch_idx, (sequence, attention_masks, token_type_ids, labels) in enumerate(valid_loader):
+            for batch_idx, (sequence, attention_masks, token_type_ids, labels) in enumerate(tqdm(valid_loader)):
                 sequence = sequence.to(device)
                 attention_masks = attention_masks.to(device)
                 token_type_ids = token_type_ids.to(device)
                 labels = labels.to(device)
 
-                loss, prediction = classifier(sequence, attention_mask=attention_masks, token_type_ids=token_type_ids, labels=labels)
+                loss, prediction = classifier(sequence, attention_mask=attention_masks, token_type_ids=token_type_ids, labels=labels, return_dict=False)
                 valid_loss += loss.item()
                 prediction = torch.argmax(prediction, dim=-1)
 
