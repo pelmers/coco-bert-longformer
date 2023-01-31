@@ -31,7 +31,7 @@ def train(device, model_type, model_save_path, data_classes = ['param', 'return'
     valid_loader = DataLoader(dataset=valid_data, batch_size=BATCH_SIZE, shuffle=False, num_workers=0, pin_memory=True)
 
     patience = 0
-    best_valid_f1 = 0.0
+    best_valid_f1 = -1.0
 
     for epoch in range(MAX_EPOCHS):
         if patience >= TOLERANCE:
@@ -96,7 +96,7 @@ def train(device, model_type, model_save_path, data_classes = ['param', 'return'
             best_valid_f1 = valid_f1
             patience = 0 # reset
             print(f"New best validation F1 of {valid_f1:.3f}. Saving model.")
-            torch.save(classifier.module.state_dict(), model_save_path)
+            torch.save(classifier.state_dict(), model_save_path)
         else:
             patience += 1
 
