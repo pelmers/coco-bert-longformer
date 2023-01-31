@@ -1,6 +1,8 @@
 import torch, os, random, argparse
 import numpy as np
 
+from tqdm import tqdm
+
 from torch.utils.data import DataLoader
 from metrics import compute_metrics
 from dataset import *
@@ -14,13 +16,13 @@ def test(classifier, test_loader, device):
     gold_labels = []
 
     with torch.no_grad():
-        for batch_idx, (sequence, attention_masks, token_type_ids, labels) in enumerate(test_loader):
+        for batch_idx, (sequence, attention_masks, token_type_ids, labels) in enumerate(tqdm(test_loader)):
             sequence = sequence.to(device, non_blocking=True)
             attention_masks = attention_masks.to(device, non_blocking=True)
             token_type_ids = token_type_ids.to(device, non_blocking=True)
             labels = labels.to(device, non_blocking=True)
 
-            loss, prediction = classifier(sequence, attention_mask=attention_masks, token_type_ids=token_type_ids, labels=labels)
+            loss, prediction = classifier(sequence, attention_mask=attention_masks, token_type_ids=token_type_ids, labels=labels, return_dict=False)
             test_loss += loss.item()
             prediction = torch.argmax(prediction, dim=-1)
 
