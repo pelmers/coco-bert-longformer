@@ -15,7 +15,7 @@ from dataset import *
 from model import get_bert_model, get_longformer_model
 from constants import *
 
-def train(device, model_type, model_save_path, data_classes = ['param', 'return', 'summary']):
+def train(device, model_type, model_save_path, data_classes = ['param', 'return', 'summary'], negative_class_weight=1):
     assert model_type in ['bert', 'longformer']
     classifier = get_bert_model() if model_type == 'bert' else get_longformer_model()
     classifier.to(device)
@@ -68,7 +68,7 @@ def train(device, model_type, model_save_path, data_classes = ['param', 'return'
             gold_labels.extend(labels)
 
         train_loss = train_loss / len(train_loader)
-        train_precision, train_recall, train_f1, train_acc = compute_metrics(predictions, gold_labels)
+        train_precision, train_recall, train_f1, train_acc, train_weighted_f1 = compute_metrics(predictions, gold_labels, negative_class_weight=negative_class_weight)
 
         classifier.eval()
         valid_loss = 0.0
@@ -90,7 +90,7 @@ def train(device, model_type, model_save_path, data_classes = ['param', 'return'
                 gold_labels.extend(labels)
         
         valid_loss = valid_loss / len(valid_loader)
-        valid_precision, valid_recall, valid_f1, valid_acc = compute_metrics(predictions, gold_labels)
+        valid_precision, valid_recall, valid_f1, valid_acc, val_weighted_f1 = compute_metrics(predictions, gold_labels, negative_class_weight=negative_class_weight)
 
         if valid_f1 > best_valid_f1:
             best_valid_f1 = valid_f1
@@ -106,6 +106,7 @@ def train(device, model_type, model_save_path, data_classes = ['param', 'return'
 
         print(f"Epoch {epoch + 1}: train_loss: {train_loss:.3f} train_precision: {train_precision:.3f} train_recall: {train_recall:.3f} train_f1: {train_f1:.3f} train_acc: {train_acc:.3f}")
         print(f"\t valid_loss: {valid_loss:.3f} valid_precision: {valid_precision:.3f} valid_recall: {valid_recall:.3f} valid_f1: {valid_f1:.3f} valid_acc: {valid_acc:.3f}")
+        print(f"weighted f1s: train: {train_weighted_f1:.3f} valid: {val_weighted_f1:.3f}")
         print("\t {:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(min), sec))
 
     return classifier

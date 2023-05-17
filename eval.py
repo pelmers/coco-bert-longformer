@@ -9,7 +9,7 @@ from dataset import *
 from model import get_bert_model, get_longformer_model
 from constants import *
 
-def test(classifier, test_loader, device):
+def test(classifier, test_loader, device, negative_class_weight=1):
     classifier.eval()
     test_loss = 0.0
     predictions = []
@@ -30,9 +30,10 @@ def test(classifier, test_loader, device):
             gold_labels.extend(labels)
         
     test_loss = test_loss / len(test_loader)
-    test_precision, test_recall, test_f1, test_acc = compute_metrics(predictions, gold_labels)
+    test_precision, test_recall, test_f1, test_acc, test_weighted_f1 = compute_metrics(predictions, gold_labels, negative_class_weight=negative_class_weight)
 
     print(f"test_loss: {test_loss:.3f} test_precision: {test_precision:.3f} test_recall: {test_recall:.3f} test_f1: {test_f1:.3f} test_acc: {test_acc:.3f}")
+    print(f"test_weighted_f1: {test_weighted_f1:.3f}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
