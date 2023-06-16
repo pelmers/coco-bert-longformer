@@ -14,7 +14,7 @@ def compute_metrics(predicted_labels, gold_labels, negative_class_weight=1):
 
     # make the sample_weights array the same size as the number of samples in the dataset, with 1 for positive and weight for negative
     sample_weights = np.ones(len(gold_labels))
-    sample_weights[gold_labels == 0] = negative_class_weight
-    weighted_f1 = f1_score(gold_labels, predicted_labels, sample_weight=sample_weights)
+    sample_weights[np.array(gold_labels) == 0] = negative_class_weight
+    weighted_f1 = f1_score(gold_labels, predicted_labels, sample_weight=sample_weights, zero_division=0)
 
     return precision, recall, f1, accuracy, weighted_f1
