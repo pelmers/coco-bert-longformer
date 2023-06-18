@@ -15,7 +15,7 @@ from dataset import *
 from model import get_bert_model, get_longformer_model
 from constants import *
 
-def train(device, model_type, model_save_path, data_classes = ['param', 'return', 'summary'], negative_class_weight=1):
+def train(device, model_type, model_save_path, train_df, valid_df, negative_class_weight=1):
     assert model_type in ['bert', 'longformer']
     classifier = get_bert_model() if model_type == 'bert' else get_longformer_model()
     classifier.to(device)
@@ -23,8 +23,6 @@ def train(device, model_type, model_save_path, data_classes = ['param', 'return'
     print('Total number of parameters: {}'.format(total_params))
     optimizer = torch.optim.Adam(classifier.parameters(), lr=LEARNING_RATE)
 
-    train_df = retrieve_train_data(data_classes)
-    valid_df = retrieve_valid_data(data_classes)
     train_data = CocoDataset(train_df, model_type)
     valid_data = CocoDataset(valid_df, model_type)
     train_loader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=False, num_workers=0, pin_memory=True)
