@@ -25,8 +25,8 @@ def train(device, model_type, model_save_path, train_df, valid_df, negative_clas
 
     train_data = CocoDataset(train_df, model_type)
     valid_data = CocoDataset(valid_df, model_type)
-    train_loader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=False, num_workers=0, pin_memory=True)
-    valid_loader = DataLoader(dataset=valid_data, batch_size=BATCH_SIZE, shuffle=False, num_workers=0, pin_memory=True)
+    train_loader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=True, num_workers=0, pin_memory=True)
+    valid_loader = DataLoader(dataset=valid_data, batch_size=BATCH_SIZE, shuffle=True, num_workers=0, pin_memory=True)
 
     patience = 0
     best_valid_f1 = -1.0
